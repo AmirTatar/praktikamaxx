@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Введите строку:");
+        string input = Console.ReadLine();
+        
+        var invalidChars = CheckValidCharacters(input);
+        
+        if (invalidChars.Any())
+        {
+            Console.WriteLine("Введены недопустимые символы:");
+            Console.WriteLine(string.Join(", ", invalidChars));
+        }
+        else
+        {
+            string result = ProcessString(input);
+            Console.WriteLine("Обработанная строка: " + result);
+
+            var charCount = CountCharacters(result);
+            
+            Console.WriteLine("\nСтатистика символов:");
+            foreach (var item in charCount.OrderBy(x => x.Key))
+            {
+                Console.WriteLine($"{item.Key}: {item.Value} раз");
+            }
+
+            string maxVowelSubstring = FindMaxVowelSubstring(result);
+            Console.WriteLine($"\nСамая длинная подстрока: {maxVowelSubstring}");
+        }
+    }
+
+    static HashSet<char> CheckValidCharacters(string input)
+    {
+        HashSet<char> invalidChars = new HashSet<char>();
+        
+        foreach (char c in input)
+        {
+            if (!char.IsLower(c) || !char.IsLetter(c))
+            {
+                invalidChars.Add(c);
+            }
+        }
+        
+        return invalidChars;
+    }
+
+    static string ProcessString(string input)
+    {
+        if (input.Length % 2 == 0)
+        {
+
+            int mid = input.Length / 2;
+            string firstHalf = ReverseString(input.Substring(0, mid));
+            string secondHalf = ReverseString(input.Substring(mid));
+            return firstHalf + secondHalf;
+        }
+        else
+        {
+
+            string reversed = ReverseString(input);
+            return reversed + input;
+        }
+    }
+
+    static string ReverseString(string str)
+    {
+        char[] charArray = str.ToCharArray();
+        Array.Reverse(charArray);
+        return new string(charArray);
+    }
+
+    static Dictionary<char, int> CountCharacters(string input)
+    {
+        Dictionary<char, int> charCount = new Dictionary<char, int>();
+        
+        foreach (char c in input)
+        {
+            if (charCount.ContainsKey(c))
+            {
+                charCount[c]++;
+            }
+            else
+            {
+                charCount[c] = 1;
+            }
+        }
+        
+        return charCount;
+    }
+
+    static string FindMaxVowelSubstring(string input)
+    {
+        HashSet<char> vowels = new HashSet<char> { 'a', 'e', 'i', 'o', 'u', 'y' };
+        string maxSubstring = string.Empty;
+        
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (vowels.Contains(input[i]))
+            {
+                for (int j = input.Length - 1; j >= i; j--)
+                {
+                    if (vowels.Contains(input[j]))
+                    {
+                        string currentSubstring = input.Substring(i, j - i + 1);
+                        if (currentSubstring.Length > maxSubstring.Length)
+                        {
+                            maxSubstring = currentSubstring;
+                        }
+                        break; 
+                    }
+                }
+            }
+        }
+        
+        return maxSubstring;
+    }
+}

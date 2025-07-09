@@ -1,0 +1,21 @@
+func bubbleSort(_ array: inout [Int]) {
+    let n = array.count
+    
+    for i in 0..<n {
+
+        var swapped = false
+        
+        for j in 0..<(n-i-1) where array[j] > array[j+1] {
+
+            swap(&array[j], &array[j + 1])
+            swapped = true
+        }
+        
+        if !swapped { break }
+    }
+}
+
+var numbers = [78, 56, 43, 21, 1]
+print("Исходный массив:", numbers)
+bubbleSort(&numbers)
+print("Отсортированный массив:", numbers)
